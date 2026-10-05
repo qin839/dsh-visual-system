@@ -366,6 +366,34 @@ export function apply(ctx) {
       }),
     );
 
+    // 主题状态：客户端半边（lib/client.js）用这个接口一次拿到
+    // 「当前预设 + 生成好的 CSS + 素材地址」，然后在渲染进程里自己挂样式和壁纸。
+    // 之所以要这条路由：桌面端窗口加载的是打包页面（dsh-app://app/），
+    // 吃不到 webserver/index-inject 的 style/html 行，只有客户端插件两端通用。
+    disposers.push(
+      ws.register({
+        kind: 'exact',
+        path: `${ROUTE}/state`,
+        handler: (req, res) => {
+          const selection = currentSelection();
+          const preset = selection.chosen?.preset;
+          const carriesMedia = preset && (preset.kind === 'video' || preset.kind === 'image');
+          const payload = preset
+            ? {
+                active: preset.id,
+                presets: selection.presets.map((p) => p.preset.id),
+                css: composeStyles(preset),
+                media: carriesMedia
+                  ? { kind: preset.kind, url: assetUrl(preset.id, preset.asset), focus: preset.focus ?? null }
+                  : null,
+              }
+            : { active: null, presets: [], css: '', media: null };
+          res.writeHead(200, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
+          res.end(JSON.stringify(payload));
+        },
+      }),
+    );
+
     // The switcher page.
     disposers.push(
       ws.register({

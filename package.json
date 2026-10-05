@@ -1,11 +1,12 @@
 {
   "name": "dsh-visual-system",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "type": "module",
   "description": "Wallpaper-driven visual system for the DeepSeek Harness Web GUI — one preset.json swaps the whole colour system and background",
   "main": "index.js",
   "exports": {
-    ".": "./index.js"
+    ".": "./index.js",
+    "./client": "./lib/client.js"
   },
   "license": "MIT",
   "author": "qin839",
@@ -32,5 +33,11 @@
     "tools",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "dsh": {
+    "client": {
+      "platform": "web",
+      "inject": []
+    }
+  }
 }

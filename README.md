@@ -1,12 +1,12 @@
 # dsh-visual-system
 
-**壁纸驱动视觉系统** —— 给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web GUI 用。
+**壁纸驱动视觉系统** —— 给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Web GUI 与**桌面端**用。
 一份 `preset.json`（十来个颜色锚点 + 一个媒体文件）就能换一整套配色和背景，支持静态图、
 **视频**和 CSS 微动，并自带一个网页版切换器。
 
-*A wallpaper-driven visual system for the DeepSeek Harness Web GUI: one preset file
-swaps the entire colour system and the background, with image/video media, subtle CSS
-motion, and a built-in switcher page.*
+*A wallpaper-driven visual system for the DeepSeek Harness Web GUI **and the desktop app**:
+one preset file swaps the entire colour system and the background, with image/video media,
+subtle CSS motion, and a built-in switcher page.*
 
 ![主界面：demo 预设（深色）](preview/01-app-demo.png)
 
@@ -21,27 +21,39 @@ motion, and a built-in switcher page.*
 > *Third-party artwork is deliberately not shipped. Only code, preset definitions and one
 > original demo wallpaper are included.*
 
-## 支持范围（重要，先说结论）
+## 支持范围
 
-| 运行环境 | 插件加载 | 视觉注入（主题 + 壁纸） |
+| 运行环境 | 插件加载 | 主题 + 壁纸 |
 | --- | --- | --- |
 | Web profile（`dsh web`） | ✅ | ✅ 已验证 |
-| 桌面端（Electron，`desktop` profile） | ✅ 路由可用 | ❌ **暂不生效** |
+| 桌面端（Electron，`desktop` profile） | ✅ | ✅ 已验证 |
 
-桌面端上的实测结论（2026-10-05，v0.2.0-rc.2）：
+两端都靠**同一份客户端实现**（`lib/client.js`）落地，原因见下。
 
-- 把插件挂进 `$DSH_HOME/profiles/desktop/cordis.patch.yml` 后，**宿主侧完全正常**：
-  `/dsh-visual/config` 与 `/dsh-visual/asset/**` 都能正常返回，宿主插件热加载/热卸载都生效。
-- 但**界面不会变色、壁纸也不出现**。原因是本插件靠 `webserver/index-inject` 往宿主渲染的
-  `index.html` 里塞 `<style>` / `<body>` 片段；而桌面端窗口加载的是打包页面
-  （`dsh-app://app/`），它只消费注入表里的"全局变量"那类条目
-  （桌面端自己用它注入 `__DSH_CONNECTION_RECOVERY__`、启动注入、快捷键配置），
-  不吃 `style` / `html` 行。用刺眼探针预设（配色改成品红 + `showWallpaper`）做过对照实验，
-  确认不是主题模式或缓存问题。
+### 为什么需要客户端半边（一段踩坑记录）
 
-**路线图**：把"应用主题"这一步从宿主注入改成**客户端插件**（`dsh.client` 导出，
-在渲染进程里直接写 CSS 自定义属性 + 挂壁纸元素）。素材路由继续沿用宿主侧。
-这样 web 与桌面端就能用同一套实现——欢迎 PR。
+最早的实现只做宿主侧：用 `webserver/index-inject` 往宿主渲染的 `index.html` 里塞
+`<style>` 和 body 片段。这在 web 端没问题，但**桌面端完全不生效**——桌面端窗口加载的是
+打包页面（`dsh-app://app/`），它只消费注入表里的「全局变量」那类条目
+（桌面端自己用它注入 `__DSH_CONNECTION_RECOVERY__`、启动注入、快捷键配置），
+不吃 `style` / `html` 行。当时用一个「配色改成品红」的探针预设做过对照实验确认：
+窗口重载后毫无变化。
+
+修法是把「应用主题」搬到**客户端插件**里（渲染进程直接操作 DOM），宿主只负责算和发：
+
+```text
+宿主半边 index.js         客户端半边 lib/client.js
+├─ 生成完整 --dsw-* CSS   ├─ GET /dsh-visual/state（拿 CSS + 素材地址）
+├─ /dsh-visual/asset/**   ├─ 往 <head> 贴 <style>
+├─ /dsh-visual/state      ├─ 往 <body> 首个位置插 #dsh-visual-media
+└─ /dsh-visual/ 切换页     └─ 每 4 秒轮询一次，切预设即时生效
+```
+
+桌面端的验证方式同样是探针预设：把配色改成品红后**不重启、不重载**，界面在几秒内变红
+（客户端轮询拿到新状态），撤掉探针又恢复。web 与桌面端的渲染进程是同一套前端，所以两端行为一致。
+
+顺带一提：桌面端支持对 `cordis.patch.yml` **热插拔**（存盘即生效、删掉即卸载），
+配合上面的轮询，改预设 / 改代码基本不用重启。
 
 ## 特性
 
@@ -51,17 +63,15 @@ motion, and a built-in switcher page.*
 - 尊重 `prefers-reduced-motion`
 - 自带切换页面 `/dsh-visual/`，点图即切
 - 素材路由支持 **Range**（视频可拖动进度）与 **ETag**（304 复用）
-- 宿主侧插件，**没有浏览器端 bundle**，只用两个官方扩展点接入
 - 素材路径做了目录穿越防护；预设目录外的文件只能通过 `preset.json` 里写死的 `assetPath` 引用
+- 视觉失败绝不影响页面：宿主注入与客户端都各自吞掉异常，只记一条警告
 
 ## 安装
 
-插件是 out-of-tree 的宿主插件，挂在某个 profile 的 patch 层里。
+插件挂在某个 profile 的 patch 层里。**改完存盘即生效**（loader 热应用 patch），不需要重启服务。
 
 1. 把本仓库放到任意目录，例如 `<你放插件的地方>\dsh-visual-system`。
-2. 编辑该 profile 的 patch 文件（Web GUI 用 `web` profile）：
-
-   `$DSH_HOME/profiles/web/cordis.patch.yml`
+2. 编辑目标 profile 的 patch 文件：
 
    ```yaml
    - insert:
@@ -69,13 +79,18 @@ motion, and a built-in switcher page.*
          name: 'file:///C:/你的路径/dsh-visual-system/index.js?v=1'
    ```
 
+   - Web GUI：`$DSH_HOME/profiles/web/cordis.patch.yml`
+   - **桌面端**：`$DSH_HOME/profiles/desktop/cordis.patch.yml`
+     （桌面端会自己重写这个文件里的 `- id:` 条目，但不会动你的 `- insert:`）
+
    > Windows 路径写成 `file:///C:/...`（正斜杠）。`?v=N` 是模块缓存破坏参数：
-   > 改 `index.js` / `lib/*.mjs` 之后把它递增，Node 才会重新加载。
-   > **存盘即生效**（loader 会热应用 patch），不用重启服务。
+   > 改 `index.js` / `lib/*.mjs` 之后把它递增。
+   > 客户端半边（`lib/client.js`）由宿主按 `package.json` 的 `dsh.client` 声明发现，
+   > 改完刷新一次页面即可。
 
-3. 刷新页面即生效。**改 `preset.json` 或换素材只需要刷新页面**。
+3. 刷新页面（或重载窗口）即生效。
 
-卸载：删掉那段 `- insert:` 再刷新页面，就回到原生配色（插件目录留着不影响任何东西）。
+卸载：删掉那段 `- insert:`，刷新页面就回到原生配色（插件目录留着不影响任何东西）。
 
 ## 仓库里的预设
 
@@ -93,18 +108,21 @@ URL 里传的路径不会碰到磁盘）。
 
 ## 切换
 
-浏览器打开 **`http://<你的 DSH Web 地址>/dsh-visual/`**，点图即切，刷新页面生效。
-等价于直接改 `config.json`：
+浏览器打开 **`http://<你的 DSH 地址>/dsh-visual/`**，点图即切。（桌面端也可以在
+`http://127.0.0.1:<桌面端端口>/dsh-visual/` 打开同一个页面。）等价于直接改 `config.json`：
 
 ```json
 { "active": "demo" }
 ```
+
+因为客户端每 4 秒轮询一次状态，**改完不刷新页面也会生效**。
 
 其它接口：
 
 ```text
 GET  /dsh-visual/config                  # 当前预设 + 预设清单
 POST /dsh-visual/config  {"active":"…"}  # 切换
+GET  /dsh-visual/state                   # 客户端半边用：CSS + 素材地址
 GET  /dsh-visual/asset/<id>/<path>       # 预设素材（支持 Range，视频可拖动）
 ```
 
@@ -134,16 +152,10 @@ GET  /dsh-visual/asset/<id>/<path>       # 预设素材（支持 Range，视频�
 
 `veil` 控制表面透明度（越大越不透明），`scrim` 是压在图上面的那层纱。
 
-## 它是怎么接进 GUI 的
+## 图层顺序（这是关键）
 
-宿主侧插件，没有浏览器端 bundle，只用两个官方扩展点：
-
-- `webserver/index-inject` —— 每次渲染 `index.html` 时推入一行 `<style>`（生成的调色板 +
-  载体 CSS）和一行 body HTML（`#dsh-visual-media` 载体元素），所以外观在 shell 挂载前就已就位；
-- `ctx.webServer.register()` —— 提供素材、切换器、配置读写三个路由。
-
-图层顺序（这是关键）：`body` 的背景色会被传播成画布底色，所以**纱（scrim）不能放在 body 上**，
-否则会跑到壁纸下面。现在的顺序是：
+`body` 的背景色会被传播成画布底色，所以**纱（scrim）不能放在 body 上**，否则会跑到壁纸下面。
+现在的顺序是：
 
 ```text
 body 背景色(画布) → #dsh-visual-media 媒体 → ::after 纱/晕影 → 应用表面(半透明 token) → 内容
@@ -173,11 +185,8 @@ pwsh -NoProfile -File tools/make-demo-wallpaper.ps1 -Out out.png -Width 2560 -He
 取出原始美术（`presets/executioner` 的 3840×2160 封面就是这么来的）：
 
 ```powershell
-# 列出 scene.pkg 里最大的文件
 node tools/we-pkg.mjs list "…\431960\3223543799\scene.pkg"
-# 抽出某个 .tex
 node tools/we-pkg.mjs extract "…\scene.pkg" "materials/封面.tex" cover.tex
-# 新版 WE 把 PNG/JPEG 直接封在 TEXB 块里，直接捞出即可
 node tools/we-tex.mjs probe  cover.tex
 node tools/we-tex.mjs carve  cover.tex cover.png
 ```
@@ -188,7 +197,8 @@ node tools/we-tex.mjs carve  cover.tex cover.png
 ## 目录结构
 
 ```text
-index.js                     宿主插件本体：注入 + 三个路由
+index.js                     宿主半边：生成 CSS、提供素材/状态/切换器路由
+lib/client.js                客户端半边：把 CSS 与壁纸贴进页面（web + 桌面端通用）
 lib/palette.mjs              颜色锚点 → 完整 --dsw-* token 集
 presets/<id>/                一个目录一个预设（preset.json + assets/）
 preview/                     README 用的截图（均为自绘 demo 预设，版权干净）
@@ -197,11 +207,24 @@ tools/we-pkg.mjs, we-tex.mjs   Wallpaper Engine .pkg / .tex 提取工具
 config.json                  当前选中的预设（每台机器不同，已 gitignore）
 ```
 
+## 客户端 bundle 的格式
+
+`lib/client.js` 是**手写的**，没有构建步骤。它遵循官方 tsdown 预设产出的闭包工厂格式：
+
+```js
+window.__ModuleLoader__.load({
+  id: 'dsh-visual-system',
+  factory: function (require) { /* ... */ return { name, apply }; },
+});
+```
+
+因为本插件只用 DOM 和 `fetch`，不依赖任何平台模块，所以 `dsh.client.inject` 是空的，
+也就不需要打包器。
+
 ## 环境要求
 
-- 一个能起 Web GUI 的 DeepSeek Harness profile（本项目在 `web` profile 上开发）。
-- Node.js 22+（宿主插件跑在 DSH 进程里）。
-- 桌面端支持见上面的「支持范围」。
+- 一个能起 Web GUI 的 DeepSeek Harness profile，或桌面端（Electron）。
+- 宿主半边跑在 DSH 进程里；客户端半边跑在页面里（Node 版本取决于 DSH 本体）。
 
 ## License
 
