@@ -1,0 +1,47 @@
+{
+  "id": "executioner",
+  "title": "处刑者 · ゆらぎ",
+  "note": "创意工坊 3223543799 场景封面 · 3840×2160 水墨 · 呼吸式微动",
+  "kind": "image",
+  "asset": "assets/cover.png",
+  "focus": "center 32%",
+  "motion": {
+    "kind": "sway",
+    "duration": 54,
+    "fromScale": 1.05,
+    "toScale": 1.1,
+    "shift": 0.7,
+    "rotate": 0.18
+  },
+  "dark": {
+    "base": "#0a0a0c",
+    "surface": "#17181c",
+    "ink": "#edeae4",
+    "accent": "#e8e5dd",
+    "accent2": "#93a7bd",
+    "business": "#c8352f",
+    "warn": "#d59a3c",
+    "danger": "#c8352f",
+    "success": "#6fae86",
+    "onAccent": "#101114",
+    "veil": 0.44,
+    "scrim": {
+      "base": "rgba(6, 6, 8, 0.55)",
+      "wash": [
+        "radial-gradient(1000px 620px at 22% 6%, rgba(147, 167, 189, 0.13), transparent 62%)"
+      ],
+      "vignette": 0.42
+    }
+  },
+  "light": {
+    "base": "#ffffff",
+    "surface": "#f7f7f5",
+    "ink": "#111214",
+    "accent": "#3c3f45",
+    "accent2": "#4a6b8a",
+    "business": "#c8352f",
+    "onAccent": "#f7f7f5",
+    "veil": 0.97,
+    "scrim": { "base": "#f2f2f0" }
+  }
+}

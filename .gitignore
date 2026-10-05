@@ -1,0 +1,18 @@
+# 运行时状态（当前选中的预设），每台机器不一样
+config.json
+
+# 依赖
+node_modules/
+
+# 第三方素材不入库：Steam 创意工坊场景、系统壁纸等版权不属于本项目。
+# 想公开分享某个预设，请换成你自己拍摄/绘制，或有明确授权的素材。
+presets/*/assets/*
+!presets/demo/assets/*
+
+# 界面截图同样含有第三方壁纸，一并排除；需要截图时用 demo 预设自己截
+preview/
+
+# 系统杂物
+.DS_Store
+Thumbs.db
+*.log

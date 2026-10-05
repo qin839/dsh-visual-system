@@ -1,0 +1,42 @@
+{
+  "id": "emblem",
+  "title": "国徽",
+  "note": "创意工坊 3447055080 · 4K 视频壁纸 · 鎏金 + 朱红",
+  "kind": "video",
+  "asset": "assets/emblem.mp4",
+  "poster": "assets/poster.jpg",
+  "focus": "center 42%",
+  "dark": {
+    "base": "#1a1208",
+    "surface": "#241a0d",
+    "ink": "#f7ecd7",
+    "accent": "#e2b451",
+    "accent2": "#f0d79a",
+    "business": "#c8402f",
+    "warn": "#ff9d3c",
+    "danger": "#d8412f",
+    "success": "#7bbf7a",
+    "onAccent": "#241505",
+    "brandText": "#e2b451",
+    "veil": 0.44,
+    "scrim": {
+      "base": "rgba(10, 6, 2, 0.4)",
+      "wash": [
+        "radial-gradient(1200px 720px at 50% 4%, rgba(226, 180, 81, 0.18), transparent 62%)",
+        "radial-gradient(950px 620px at 50% 112%, rgba(150, 26, 20, 0.3), transparent 64%)"
+      ],
+      "vignette": 0.45
+    }
+  },
+  "light": {
+    "base": "#ffffff",
+    "surface": "#fdf8ef",
+    "ink": "#1b1305",
+    "accent": "#b8862a",
+    "accent2": "#96631a",
+    "business": "#b23a2c",
+    "onAccent": "#fffaf0",
+    "veil": 0.97,
+    "scrim": { "base": "#fbf6ec" }
+  }
+}

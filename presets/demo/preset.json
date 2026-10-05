@@ -1,0 +1,44 @@
+{
+  "id": "demo",
+  "title": "演示 · 靛蓝地平线",
+  "note": "本项目自绘的渐变壁纸，随仓库发布，可直接用作起点",
+  "kind": "image",
+  "asset": "assets/gradient.png",
+  "focus": "center 62%",
+  "motion": {
+    "kind": "drift",
+    "duration": 72,
+    "fromScale": 1.03,
+    "toScale": 1.09,
+    "shift": 0.8,
+    "rise": 0.6
+  },
+  "dark": {
+    "base": "#05070f",
+    "surface": "#141a30",
+    "ink": "#eef1fb",
+    "accent": "#f2c14e",
+    "accent2": "#5ad2e6",
+    "business": "#f2c14e",
+    "onAccent": "#141005",
+    "veil": 0.5,
+    "scrim": {
+      "base": "rgba(5, 7, 20, 0.6)",
+      "wash": [
+        "radial-gradient(1100px 680px at 20% 4%, rgba(90, 210, 230, 0.12), transparent 64%)",
+        "linear-gradient(180deg, rgba(5, 7, 20, 0) 45%, rgba(5, 7, 20, 0.55) 100%)"
+      ],
+      "vignette": 0.44
+    }
+  },
+  "light": {
+    "base": "#ffffff",
+    "surface": "#f7f8fc",
+    "ink": "#0a0d1c",
+    "accent": "#b8860b",
+    "accent2": "#0f6d88",
+    "onAccent": "#ffffff",
+    "veil": 0.97,
+    "scrim": { "base": "#f4f6fb" }
+  }
+}

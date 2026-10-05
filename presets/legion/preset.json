@@ -1,0 +1,48 @@
+{
+  "id": "legion",
+  "title": "LEGION 蓝龙",
+  "note": "本机壁纸 · 靛蓝 + 帝王金 + 电光青",
+  "kind": "image",
+  "asset": "assets/wallpaper.jpg",
+  "focus": "center 38%",
+  "motion": {
+    "kind": "drift",
+    "duration": 76,
+    "fromScale": 1.04,
+    "toScale": 1.12,
+    "shift": 1.1,
+    "rise": 0.8
+  },
+  "dark": {
+    "base": "#070a20",
+    "surface": "#151b3b",
+    "ink": "#eef1fb",
+    "accent": "#f2c14e",
+    "accent2": "#5ad2e6",
+    "business": "#f2c14e",
+    "warn": "#ff8f3c",
+    "danger": "#f2555a",
+    "success": "#46d99a",
+    "onAccent": "#1b1405",
+    "veil": 0.5,
+    "scrim": {
+      "base": "rgba(5, 7, 20, 0.66)",
+      "wash": [
+        "radial-gradient(1100px 640px at 13% -4%, rgba(78, 104, 214, 0.3), transparent 62%)",
+        "radial-gradient(900px 520px at 94% 100%, rgba(242, 193, 78, 0.14), transparent 60%)"
+      ],
+      "vignette": 0.46
+    }
+  },
+  "light": {
+    "base": "#ffffff",
+    "surface": "#f8f9fe",
+    "ink": "#090b1f",
+    "accent": "#c98a12",
+    "accent2": "#0f6d88",
+    "business": "#1585a3",
+    "onAccent": "#fffaf0",
+    "veil": 0.97,
+    "scrim": { "base": "#f4f6fc" }
+  }
+}
