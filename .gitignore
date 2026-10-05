@@ -9,9 +9,6 @@ node_modules/
 presets/*/assets/*
 !presets/demo/assets/*
 
-# 界面截图同样含有第三方壁纸，一并排除；需要截图时用 demo 预设自己截
-preview/
-
 # 系统杂物
 .DS_Store
 Thumbs.db

@@ -1,44 +1,49 @@
 {
   "id": "demo",
-  "title": "演示 · 靛蓝地平线",
-  "note": "本项目自绘的渐变壁纸，随仓库发布，可直接用作起点",
+  "title": "演示 · 极光",
+  "note": "本项目自绘的极光壁纸（tools/make-demo-wallpaper.ps1 可复现），随仓库发布",
   "kind": "image",
-  "asset": "assets/gradient.png",
-  "focus": "center 62%",
+  "asset": "assets/aurora.png",
+  "focus": "center 38%",
   "motion": {
     "kind": "drift",
-    "duration": 72,
-    "fromScale": 1.03,
-    "toScale": 1.09,
-    "shift": 0.8,
-    "rise": 0.6
+    "duration": 78,
+    "fromScale": 1.04,
+    "toScale": 1.1,
+    "shift": 0.9,
+    "rise": 0.7
   },
   "dark": {
-    "base": "#05070f",
-    "surface": "#141a30",
-    "ink": "#eef1fb",
-    "accent": "#f2c14e",
-    "accent2": "#5ad2e6",
-    "business": "#f2c14e",
-    "onAccent": "#141005",
-    "veil": 0.5,
+    "base": "#05081c",
+    "surface": "#111a33",
+    "ink": "#eef2ff",
+    "accent": "#4fd1c5",
+    "accent2": "#c084fc",
+    "business": "#f5b544",
+    "onAccent": "#04211f",
+    "warn": "#f0b429",
+    "danger": "#ef5f7a",
+    "success": "#4ade80",
+    "veil": 0.34,
     "scrim": {
-      "base": "rgba(5, 7, 20, 0.6)",
+      "base": "rgba(4, 6, 18, 0.44)",
       "wash": [
-        "radial-gradient(1100px 680px at 20% 4%, rgba(90, 210, 230, 0.12), transparent 64%)",
-        "linear-gradient(180deg, rgba(5, 7, 20, 0) 45%, rgba(5, 7, 20, 0.55) 100%)"
+        "radial-gradient(1200px 720px at 24% 6%, rgba(79, 209, 197, 0.14), transparent 62%)",
+        "radial-gradient(1000px 640px at 82% 30%, rgba(192, 132, 252, 0.13), transparent 64%)",
+        "linear-gradient(180deg, rgba(4, 6, 18, 0) 42%, rgba(4, 6, 18, 0.58) 100%)"
       ],
-      "vignette": 0.44
+      "vignette": 0.38
     }
   },
   "light": {
     "base": "#ffffff",
-    "surface": "#f7f8fc",
-    "ink": "#0a0d1c",
-    "accent": "#b8860b",
-    "accent2": "#0f6d88",
+    "surface": "#f6f8fd",
+    "ink": "#0a0f22",
+    "accent": "#0f766e",
+    "accent2": "#7c3aed",
+    "business": "#a16207",
     "onAccent": "#ffffff",
     "veil": 0.97,
-    "scrim": { "base": "#f4f6fb" }
+    "scrim": { "base": "#f3f6fc" }
   }
 }
