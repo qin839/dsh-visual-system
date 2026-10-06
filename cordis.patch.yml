@@ -1,0 +1,14 @@
+# dsh-visual-system 的 bundle patch —— 挂载声明。
+#
+# 装上本包后（`dsh plugin --profile <web|desktop> add dsh-visual-system`），
+# dsh 的 reconcile 会把这个依赖并进该 profile 的 `dsh.profile.bundles`，
+# 于是这条 insert 生效：
+#   - 宿主半边 index.js 注册 /dsh-visual/* 路由并生成调色板
+#   - 客户端半边 lib/client.js（由 package.json 的 dsh.client 声明发现）
+#     在渲染进程里把 CSS 与壁纸贴进页面
+#
+# 想临时停用：把这条 insert 删掉，或在 profile 的 cordis.patch.yml 里按 id
+# `visual-system` 覆盖成 disabled。
+- insert:
+    - id: visual-system
+      name: dsh-visual-system

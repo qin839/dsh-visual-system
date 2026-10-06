@@ -1,6 +1,6 @@
 {
   "name": "dsh-visual-system",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "type": "module",
   "description": "Wallpaper-driven visual system for the DeepSeek Harness Web GUI — one preset.json swaps the whole colour system and background",
   "main": "index.js",
@@ -29,12 +29,18 @@
   "files": [
     "index.js",
     "lib",
-    "presets",
+    "cordis.patch.yml",
+    "presets/*/preset.json",
+    "presets/demo/assets",
     "tools",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
     "client": {
       "platform": "web",
       "inject": []

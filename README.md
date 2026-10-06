@@ -68,7 +68,33 @@ subtle CSS motion, and a built-in switcher page.*
 
 ## 安装
 
-插件挂在某个 profile 的 patch 层里。**改完存盘即生效**（loader 热应用 patch），不需要重启服务。
+### 方式一：一条命令（推荐）
+
+本包声明了 `dsh.bundle.patch`，所以装进 profile 后会被自动并进
+`dsh.profile.bundles` 并生效 —— 不需要手改任何配置文件：
+
+```powershell
+# Web GUI
+dsh plugin --profile web add dsh-visual-system
+
+# 官方桌面端（用桌面端自带的 CLI，它才被允许碰 desktop profile）
+"%LOCALAPPDATA%\Programs\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd" plugin --profile desktop add dsh-visual-system
+```
+
+本地开发时可以直接指向本仓库：
+
+```powershell
+dsh plugin --profile web add "file:C:\你的路径\dsh-visual-system"
+```
+
+> ⚠️ 装/换版本时**桌面端要先完全退出**（profile 目录被它独占）；
+> 装好后若界面没变化，**重启一次桌面端**再刷新。
+> 卸载：`dsh plugin --profile <web|desktop> remove dsh-visual-system`。
+
+### 方式二：手工挂载（out-of-tree / 调试用）
+
+不想让 pnpm 管这个包时，直接把它挂进 profile 的 patch 层。
+**改完存盘即生效**（loader 热应用 patch），不需要重启服务。
 
 1. 把本仓库放到任意目录，例如 `<你放插件的地方>\dsh-visual-system`。
 2. 编辑目标 profile 的 patch 文件：
@@ -85,8 +111,9 @@ subtle CSS motion, and a built-in switcher page.*
 
    > Windows 路径写成 `file:///C:/...`（正斜杠）。`?v=N` 是模块缓存破坏参数：
    > 改 `index.js` / `lib/*.mjs` 之后把它递增。
-   > 客户端半边（`lib/client.js`）由宿主按 `package.json` 的 `dsh.client` 声明发现，
-   > 改完刷新一次页面即可。
+   > 这种方式下**只能挂宿主半边**：`file://` 挂载的包享受不到 profile 的运行时解析，
+   > 若插件 `import` 了 `@deepseek-ai/*` 或 `zod` 之类会解析失败。
+   > 本插件只用 Node 内置模块 + DOM/fetch，所以两种方式都行。
 
 3. 刷新页面（或重载窗口）即生效。
 

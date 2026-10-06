@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.3.0 — 2026-10-06
+
+**一条命令安装**：本包现在声明 `dsh.bundle.patch`，装进 profile 后会被 dsh 的 reconcile
+自动并进 `dsh.profile.bundles` 并生效，不再需要手改 `cordis.patch.yml`。
+
+- 新增 `cordis.patch.yml`（insert `id: visual-system` / `name: dsh-visual-system`）。
+- `package.json` 增加 `dsh.bundle.patch`，`files` 补上 `cordis.patch.yml` 与 `CHANGELOG.md`。
+- README 的安装章节改写：「方式一：一条命令」（`dsh plugin --profile <web|desktop> add …`，
+  含桌面端要用桌面端自带 CLI 的说明）与「方式二：手工挂载（out-of-tree / 调试用）」，
+  并写明 `file://` 挂载享受不到运行时解析这个限制。
+
 ## v1.2.0 — 2026-10-05
 
 客户端半边：主题在**桌面端**也生效了。
