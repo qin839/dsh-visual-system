@@ -43,7 +43,15 @@
     "accent2": "#7c3aed",
     "business": "#a16207",
     "onAccent": "#ffffff",
-    "veil": 0.97,
-    "scrim": { "base": "#f3f6fc" }
+    "veil": 0.88,
+    "scrim": {
+      "base": "rgba(255, 255, 255, 0.66)",
+      "wash": [
+        "radial-gradient(1100px 680px at 20% 8%, rgba(79, 209, 197, 0.10), transparent 62%)",
+        "linear-gradient(180deg, rgba(255, 255, 255, 0.05) 40%, rgba(255, 255, 255, 0.34) 100%)"
+      ],
+      "vignette": 0.16
+    },
+    "showWallpaper": true
   }
 }
