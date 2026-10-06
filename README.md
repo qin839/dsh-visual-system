@@ -91,6 +91,10 @@ dsh plugin --profile web add "file:C:\你的路径\dsh-visual-system"
 > 装好后若界面没变化，**重启一次桌面端**再刷新。
 > 卸载：`dsh plugin --profile <web|desktop> remove dsh-visual-system`。
 
+> ✅ **已实测**（2026-10-06，官方桌面端 v0.2.0-rc.2）：用 `file:` 规格装进 `desktop` profile 后，
+> dsh 的 reconcile 会自动把 `dsh-visual-system` 并进 `dsh.profile.bundles`，宿主路由与客户端半边都正常，
+> 原来的手工挂载可以删掉。**装完若界面没变化，重启一次桌面端**（注入表在启动时收集一次）。
+
 ### 方式二：手工挂载（out-of-tree / 调试用）
 
 不想让 pnpm 管这个包时，直接把它挂进 profile 的 patch 层。
