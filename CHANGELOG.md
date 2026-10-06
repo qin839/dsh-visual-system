@@ -1,5 +1,25 @@
 # Changelog
 
+# Changelog
+
+## v1.4.0 — 2026-10-06
+
+**测试与 CI**：仓库从"能跑"变成"有回归保护"。
+
+- 新增 `test/`（19 个用例，只用 `node:test`，**零依赖**，96 ms 跑完）：
+  - `palette.test.mjs` —— 颜色解析 / 混色夹取 / CSS 输出格式，以及 `buildStyles` 的确定性与 token 覆盖；
+  - `presets.test.mjs` —— 每个 `preset.json` 的结构、锚点合法性、`asset` 形状（目录穿越防护契约）、
+    素材存在性，外加"每个预设都能真的生成出带 token 的 CSS"这个端到端 smoke test；
+  - `client-bundle.test.mjs` —— 用假的 `__ModuleLoader__` **真的装载一遍客户端半边**，验证
+    id / factory / `{ name, apply }` 契约。这一半坏了不会报错，只会静默失效，所以必须测；
+  - `module.test.mjs` —— 宿主半边可导入，且 `package.json` 的对外契约
+    （`dsh.bundle.patch` / `dsh.client`）没被改坏。
+- 新增 `.github/workflows/ci.yml`：Node 20 / 22 双版本跑 `npm test`（无依赖，连 install 都省了）。
+  替换掉原来的 `deno.yml` —— Deno 跑不了这些 `node:test` 用例，仓库里也没有 Deno 测试，
+  留着只会让每次 push 挂红叉。
+- **修掉一个真实缺陷**：`parseColor('rgb(1,2)')` 以前会返回 `{ r: 1, g: 2, b: undefined }` 而不报错，
+  让 `undefined` 一路渗进生成的 CSS。现在缺分量或非数字一律抛错，并有用例锁住这个行为。
+- `package.json` 加 `scripts.test`，`files` 纳入 `test/` —— 装下来的包也能自己 `npm test`。
 ## v1.3.0 — 2026-10-06
 
 **一条命令安装**：本包现在声明 `dsh.bundle.patch`，装进 profile 后会被 dsh 的 reconcile
