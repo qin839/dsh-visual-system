@@ -8,8 +8,10 @@
 
 - 新增 `test/`（19 个用例，只用 `node:test`，**零依赖**，96 ms 跑完）：
   - `palette.test.mjs` —— 颜色解析 / 混色夹取 / CSS 输出格式，以及 `buildStyles` 的确定性与 token 覆盖；
-  - `presets.test.mjs` —— 每个 `preset.json` 的结构、锚点合法性、`asset` 形状（目录穿越防护契约）、
-    素材存在性，外加"每个预设都能真的生成出带 token 的 CSS"这个端到端 smoke test；
+  - `presets.test.mjs` —— 每个 `preset.json` 的结构、锚点合法性、`asset` 形状（目录穿越防护契约），
+    外加"每个预设都能真的生成出带 token 的 CSS"这个端到端 smoke test。
+    **素材存在性只对随仓库发布的预设断言**：第三方素材不入库，干净克隆里不存在，
+    对它们断言文件存在会造成"本地绿、CI 红"（第一版就踩了，已由 CI 抓到并改正）；
   - `client-bundle.test.mjs` —— 用假的 `__ModuleLoader__` **真的装载一遍客户端半边**，验证
     id / factory / `{ name, apply }` 契约。这一半坏了不会报错，只会静默失效，所以必须测；
   - `module.test.mjs` —— 宿主半边可导入，且 `package.json` 的对外契约
